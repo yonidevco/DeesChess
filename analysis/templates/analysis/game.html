@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full game</title>
+    <style>
+        body { font-family: monospace; padding: 20px; line-height: 1.4; }
+        pre { background:#f7f7f7; padding:12px; border-radius:6px; white-space:pre-wrap; }
+    </style>
+</head>
+<body>
+    <h1> {{ event }} ({{ date }}) </h1>
+    <p><strong>White:</strong> {{ white }}</p>
+    <p><strong>Black:</strong> {{ black }}</p>
+    <p><strong>Winner:</strong> {{ winner }} </p>
+
+    <h1>Moves:</h1>
+    <p>{{ moves }}</p>
+</body>
+</html>

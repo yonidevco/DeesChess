@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload PGN</title>
+</head>
+<body>
+    <h1>Upload a PGN file</h1>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">Upload</button>
+    </form>
+
+    {% if game_info %}
+        <h2>Game Info</h2>
+        <p><strong>Event:</strong> {{ game_info.event }}</p>
+        <p><strong>Date:</strong> {{ game_info.date }}</p>
+        <p><strong>White:</strong> {{ game_info.white }}</p>
+        <p><strong>Black:</strong> {{ game_info.black }}</p>
+        <p><strong>Winner:</strong> {{ game_info.winner }}</p>
+        <h3>Moves</h3>
+        <p>{{ game_info.moves }}</p>
+    {% endif %}
+</body>
+</html>
