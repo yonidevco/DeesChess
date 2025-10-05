@@ -1,0 +1,169 @@
+/* ChatGPT made this*/
+:root{
+  --bg:#0f1724;
+  --card:#0b1220;
+  --accent:#7c3aed;
+  --muted:#94a3b8;
+  --text:#e6eef8;
+}
+
+*{
+    box-sizing:border-box
+}
+
+html,body{
+    height:100%;
+    margin:0;
+    font-family:Inter,Segoe UI,Roboto,system-ui,-apple-system,"Helvetica Neue",Arial
+}
+
+body{
+    background:linear-gradient(180deg,#071020 0%, var(--bg) 100%);
+    color:var(--text);
+    display:flex;
+    align-items:center;
+    justify-content:center;padding:32px
+}
+
+.container{
+    width:900px;
+    max-width:96%;
+}
+
+header h1{
+    margin:0;
+    font-size:28px
+}
+
+.subtitle{
+    margin:6px 0 18px;
+    color:var(--muted)
+}
+
+.uploader{
+    background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+    padding:18px;border-radius:12px;
+    box-shadow:0 6px 24px rgba(2,6,23,0.6)
+}
+
+.dropzone{
+    display:block;
+    border:2px dashed rgba(255,255,255,0.06);
+    padding:28px;
+    border-radius:10px;
+    cursor:pointer;
+    transition:all .18s ease; 
+    text-align:center
+}
+
+.dropzone input{
+    display:none
+}
+
+.dropzone:hover{
+    transform:translateY(-2px)
+}
+
+.dz-content strong{
+    display:block;
+    font-size:16px
+}
+
+.dz-content .muted{
+    display:block;
+    color:var(--muted);
+    margin-top:6px
+}
+
+.dz-content .hint{
+    display:block;
+    color:var(--muted);
+    margin-top:8px;
+    font-size:12px
+}
+
+.meta{
+    margin-top:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center
+}
+
+.meta div{
+    color:var(--muted)
+}
+
+.actions{
+    display:flex;
+    gap:8px
+}
+
+.btn{
+    background:transparent;
+    border:1px solid rgba(255,255,255,0.06);
+    padding:8px 12px;
+    border-radius:8px;
+    color:var(--text);
+    cursor:pointer
+}
+
+.btn.primary{
+    background:linear-gradient(90deg,var(--accent),#4f46e5);
+    border:none
+}
+
+.btn:hover{
+    opacity:.95
+}
+
+.error{
+    margin-top:10px;
+    color:#ffd2d2;
+    background:#4b0f0f;
+    padding:10px;
+    border-radius:8px
+}
+
+.preview{
+    margin-top:18px;
+    background:#071022;
+    padding:16px;
+    border-radius:10px
+}
+
+.preview h2{
+    margin:0 0 10px 0
+}
+
+.pgn{
+    white-space:pre-wrap;
+    max-height:420px;
+    overflow:auto;
+    background:#06121b;
+    padding:12px;
+    border-radius:8px;
+    border:1px solid rgba(255,255,255,0.03);
+    color:#dbeafe
+}
+
+.foot{
+    margin-top:10px;
+    color:var(--muted)
+}
+
+
+/* drag active state */
+.dropzone.dragover{
+    border-color:rgba(124,58,237,0.9);
+    box-shadow:0 6px 24px rgba(124,58,237,0.12)
+}
+
+
+/* responsive */
+@media (max-width:520px){
+    .meta{
+        flex-direction:column;
+        align-items:flex-start;
+        gap:8px
+    }
+}

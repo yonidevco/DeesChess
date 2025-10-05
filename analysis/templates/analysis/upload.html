@@ -1,27 +1,132 @@
-<!DOCTYPE html>
+{% load static %}
+<!doctype html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Upload PGN</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>DeesChess</title>
+  <link rel="stylesheet" href="{% static 'analysis/styles.css' %}">
+  <link rel="stylesheet" href="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.css" />
+  <script src="https://unpkg.com/chessboardjs@1.0.0/dist/chessboard-1.0.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/chess.js/0.13.4/chess.min.js"></script>
+
 </head>
 <body>
-    <h1>Upload a PGN file</h1>
-    <form method="post" enctype="multipart/form-data">
+  <main class="container">
+    <header>
+      <h1>DeesChess</h1>
+      <p class="subtitle">Upload a PGN file to preview its contents</p>
+    </header>
+
+    <section class="uploader">
+      <form id="uploadForm" method="post" enctype="multipart/form-data" novalidate>
         {% csrf_token %}
-        {{ form.as_p }}
-        <button type="submit">Upload</button>
+
+        <label class="dropzone" id="dropzone">
+            {{ form.file }}
+            <div class="dz-content">
+                <strong>Choose a PGN file</strong>
+                <span class="muted">or drag & drop it here</span>
+                <small class="hint">Accepted: .pgn, .txt — max 5 MB</small>
+            </div>
+        </label>
+
+        {% if form.file.errors %}
+            <ul class="errorlist">
+                {% for error in form.file.errors %}
+                    <li>{{ error }}</li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+
+        <div class="meta" id="fileMeta" hidden>
+            <div><strong>Filename:</strong> <span id="fileName"></span></div>
+            <div><strong>Size:</strong> <span id="fileSize"></span></div>
+            <div class="actions">
+                <button id="clearBtn" type="button" class="btn">Clear</button>
+                <button id="previewBtn" type="button" class="btn primary">Preview</button>
+            </div>
+        </div>
     </form>
 
-    {% if game_info %}
-        <h2>Game Info</h2>
+      <div id="error" class="error" hidden></div>
+    </section>
+
+    <section class="preview" id="previewSection" hidden>
+      <h2>Game Information Hellooo</h2>
         <p><strong>Event:</strong> {{ game_info.event }}</p>
         <p><strong>Date:</strong> {{ game_info.date }}</p>
         <p><strong>White:</strong> {{ game_info.white }}</p>
         <p><strong>Black:</strong> {{ game_info.black }}</p>
         <p><strong>Winner:</strong> {{ game_info.winner }}</p>
-        <h3>Moves</h3>
-        <p>{{ game_info.moves }}</p>
-    {% endif %}
+
+        <h3>Moves:</h3>
+        <pre class="pgn" id="pgnPreview">{{ game_info.moves }}</pre>
+
+
+      <h3>Board Preview:</h3>
+        <div id="board" style="width: 400px; margin: 20px auto;"></div>
+
+        <button id="playBtn">▶ Play</button>
+        <button id="resetBtn">⟲ Reset</button>
+    </section>
+
+    <footer class="foot">
+      <small>Tip: After previewing you can integrate this into Django by posting the file to your view.</small>
+    </footer>
+  </main>
+
+  <script src="{% static 'analysis/script.js' %}"></script>
+  
+  <script>
+document.addEventListener("DOMContentLoaded", () => {
+  const movesText = document.getElementById("pgnPreview")?.textContent.trim();
+  if (!movesText) return;
+
+  const chess = new Chess();
+  const board = Chessboard("board", { position: "start" });
+
+  const moves = movesText.split(/\s+/);
+  let i = 0;
+  let playing = false;
+  let intervalId = null;
+
+  const playBtn = document.getElementById("playBtn");
+  const resetBtn = document.getElementById("resetBtn");
+
+  function playMove() {
+    if (i >= moves.length) {
+      clearInterval(intervalId);
+      playing = false;
+      return;
+    }
+    const move = chess.move(moves[i]);
+    if (move) board.position(chess.fen());
+    i++;
+  }
+
+  playBtn.addEventListener("click", () => {
+    if (playing) {
+      clearInterval(intervalId);
+      playing = false;
+      playBtn.textContent = "▶ Play";
+    } else {
+      playing = true;
+      playBtn.textContent = "⏸ Pause";
+      intervalId = setInterval(playMove, 800);
+    }
+  });
+
+  resetBtn.addEventListener("click", () => {
+    clearInterval(intervalId);
+    chess.reset();
+    board.start();
+    i = 0;
+    playing = false;
+    playBtn.textContent = "▶ Play";
+  });
+});
+</script>
+
 </body>
 </html>

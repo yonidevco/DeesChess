@@ -72,7 +72,7 @@ def upload_pgn(request):
     if request.method == "POST":
         form = PGNUploadForm(request.POST, request.FILES)
         if form.is_valid():
-            pgn_file = request.FILES["pgn_file"]
+            pgn_file = request.FILES["file"]
 
             text_file = io.TextIOWrapper(pgn_file.file, encoding="utf-8", errors="replace")
 
@@ -102,7 +102,6 @@ def upload_pgn(request):
                 "winner" : winner,
                 "moves" : " ".join(moves),
             }
-
     else:
         form = PGNUploadForm()
     return render(request, "analysis/upload.html", {"form" : form, "game_info" : game_info})

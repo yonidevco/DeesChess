@@ -1,4 +1,11 @@
 from django import forms
 
 class PGNUploadForm(forms.Form):
-    pgn_file = forms.FileField(label="Upload PGN File")
+    file = forms.FileField(
+        label="",
+        widget=forms.ClearableFileInput(attrs={
+            "id": "fileInput",        
+            "accept": ".pgn,.txt",    
+            "style": "display:none;",
+        })
+    )
