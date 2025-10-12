@@ -1,27 +1,69 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Chessboard.js in Django</title>
-
-    <!-- CSS -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.css" />
-
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Replay Game | DeesChess</title>
+  <link rel="stylesheet" href="{% static 'analysis/chessboardjs/chessboard-1.0.0.css' %}">
+  <style>
+    body {
+      background: #1c1c1c;
+      color: #f0f0f0;
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      padding: 2rem;
+    }
+    #board {
+      width: 480px;
+      margin: 2rem auto;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0,0,0,0.3);
+    }
+  </style>
 </head>
 <body>
-    <h1>Chessboard.js Example</h1>
-    <div id="myBoard" style="width: 400px"></div>
+  <h1>Replay Chess Game</h1>
 
-    <!-- Dependencies -->
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <!-- Chessboard.js -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/chessboard-js/1.0.0/chessboard-1.0.0.min.js"></script>
+  <div id="board"></div>
 
-    <script>
-        var board = Chessboard('myBoard', {
-            position: 'start',
-            draggable: true
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="{% static 'analysis/chessboardjs/chessboard-1.0.0.js' %}"></script>
+  
+
+  <script>
+    var currentFen = "{{ fen }}";
+    var board = Chessboard('board', {
+      draggable: true,
+      position: currentFen,
+      pieceTheme: function(piece) {
+        return "{% static 'analysis/chessboardjs/img/chesspieces/wikipedia/' %}" + piece + ".png";
+      },
+      onDrop: function(source, target) {
+        var move = source + target;
+
+        $.ajax({
+          url: "{% url 'move_piece' %}",
+          type: "POST",
+          data: {
+            move: move,
+            csrfmiddlewaretoken: '{{ csrf_token }}'
+          },
+          success: function(data) {
+            if (data.error) {
+              // silently revert to last valid position
+              board.position(currentFen);
+            } else {
+              currentFen = data.fen;
+              board.position(currentFen);
+            }
+          },
+          error: function() {
+            board.position(currentFen); // revert if error
+          }
         });
-    </script>
+      }
+    });
+  </script>
 </body>
 </html>
